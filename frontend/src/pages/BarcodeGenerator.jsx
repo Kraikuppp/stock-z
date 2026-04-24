@@ -214,7 +214,9 @@ function BarcodeGenerator() {
     const labelText = buildLabelText()
     // QR should open the web receive page directly.
     const publicBaseUrl = (import.meta.env.VITE_PUBLIC_APP_URL || window.location.origin).replace(/\/+$/, '')
-    const qrValue = `${publicBaseUrl}/qr-receive?sku=${encodeURIComponent(sku.trim())}`
+    const qrLinkForSku = (targetSku) =>
+      `${publicBaseUrl}/qr-receive?sku=${encodeURIComponent(String(targetSku || '').trim())}`
+    const qrValue = qrLinkForSku(sku)
 
     const itemPayload = {
       productType,
@@ -330,6 +332,9 @@ function BarcodeGenerator() {
   }
 
   const currentTypeConfig = productTypes[productType] || { label: 'ทั่วไป', icon: '📦', fields: COMMON_FIELDS }
+  const publicBaseUrl = (import.meta.env.VITE_PUBLIC_APP_URL || window.location.origin).replace(/\/+$/, '')
+  const qrLinkForSku = (targetSku) =>
+    `${publicBaseUrl}/qr-receive?sku=${encodeURIComponent(String(targetSku || '').trim())}`
 
   return (
     <div className="space-y-6">
@@ -542,7 +547,7 @@ function BarcodeGenerator() {
                       {(item.codeType === 'qrcode' || item.codeType === 'both') && (
                         <div className="text-center">
                           <div className="text-[10px] text-gray-400 mb-1">QR CODE</div>
-                          <QRCodeSVG value={item.qrValue} size={item.codeType === 'both' ? 100 : 140} />
+                          <QRCodeSVG value={qrLinkForSku(item.sku)} size={item.codeType === 'both' ? 100 : 140} />
                           <div className="text-[10px] text-gray-400 mt-1 font-mono max-w-[140px] break-all">{item.sku}</div>
                         </div>
                       )}
@@ -563,7 +568,7 @@ function BarcodeGenerator() {
                   {(item.codeType === 'barcode' || item.codeType === 'both') && <InlineBarcode value={item.barcodeValue} />}
                   {(item.codeType === 'qrcode' || item.codeType === 'both') && (
                     <div style={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
-                      <QRCodeSVG value={item.qrValue} size={80} />
+                      <QRCodeSVG value={qrLinkForSku(item.sku)} size={80} />
                     </div>
                   )}
                 </div>
