@@ -1,0 +1,15 @@
+**/node_modules/
+**/dist/
+**/.vite/
+**/*.log
+.DS_Store
+
+# env files
+**/.env
+**/.env.*
+!**/.env.example
+
+# editor/OS
+.idea/
+.vscode/
+Thumbs.db
